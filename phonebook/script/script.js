@@ -197,6 +197,7 @@ const data = [
       list: table.tbody,
       logo,
       btnAdd: buttonGroup.btns[0],
+      btnDel: buttonGroup.btns[1],
       formOverlay: form.overlay,
       form,
     };
@@ -204,6 +205,8 @@ const data = [
 
   const createRow = ({name: firstName, surname, phone}) => {
     const tr = document.createElement('tr');
+    tr.classList.add('contact');
+
     const tdDel = document.createElement('td');
     tdDel.classList.add('delete');
     const buttonDel = document.createElement('button');
@@ -256,11 +259,27 @@ const data = [
     });
   };
 
+  const sortedContacts = (sortedForItem) => {
+    const cellIntex = sortedForItem.cellIndex;
+    const table = document.querySelector('.table');
+
+    const sortedRows = Array.from(table.rows)
+      .slice(1)
+      .sort((rowA, rowB) => {
+        if (rowA.cells[cellIntex].innerHTML > rowB.cells[cellIntex].innerHTML) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+    table.tBodies[0].append(...sortedRows);
+  };
+
   const init = (selectorApp, title) => {
     const app = document.querySelector(selectorApp);
     const phoneBook = renderPhoneBook(app, title);
 
-    const {list, logo, btnAdd, formOverlay, form} = phoneBook;
+    const {list, logo, btnAdd, btnDel, formOverlay, form} = phoneBook;
     // Функционал
 
     const allRow = renderContacts(list, data);
@@ -271,16 +290,32 @@ const data = [
       formOverlay.classList.add('is-visible');
     });
 
-    form.form.addEventListener('click', (event) => {
-      event.stopPropagation();
+    formOverlay.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target === formOverlay || target.classList.contains('close')) {
+        formOverlay.classList.remove('is-visible');
+      }
     });
 
-    formOverlay.addEventListener('click', () => {
-      formOverlay.classList.remove('is-visible');
+    btnDel.addEventListener('click', () => {
+      document.querySelectorAll('.delete').forEach((del) => {
+        del.classList.toggle('is-visible');
+      });
     });
 
-    document.querySelector('.close').addEventListener('click', () => {
-      formOverlay.classList.remove('is-visible');
+    list.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.closest('.del-icon')) {
+        target.closest('.contact').remove();
+      }
+    });
+
+    /* Sort function by first name or last name   */
+    document.querySelector('thead').addEventListener('click', (e) => {
+      const target = e.target;
+      if (target.cellIndex === 1 || target.cellIndex === 2) {
+        sortedContacts(target);
+      }
     });
   };
 
