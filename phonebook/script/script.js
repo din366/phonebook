@@ -1,34 +1,6 @@
 'use strict';
 
-const data = [
-  {
-    name: 'Иван',
-    surname: 'Петров',
-    phone: '+79514545454',
-  },
-  {
-    name: 'Игорь',
-    surname: 'Семёнов',
-    phone: '+79999999999',
-  },
-  {
-    name: 'Семён',
-    surname: 'Иванов',
-    phone: '+79800252525',
-  },
-  {
-    name: 'Мария',
-    surname: 'Попова',
-    phone: '+79876543210',
-  },
-];
-
 {
-  const addContactData = (contact) => {
-    data.push(contact);
-    console.log(data);
-  };
-
   const createContainer = () => {
     const container = document.createElement('div');
     container.classList.add('container');
@@ -241,6 +213,38 @@ const data = [
     return tr;
   };
 
+  /* Storage functions */
+
+  const getStorage = (key) => {
+    const localStorageKey = localStorage.getItem(key);
+    if (localStorageKey === null) {
+      return [];
+    } else {
+      return JSON.parse(localStorageKey);
+    }
+  };
+
+  const setStorage = (key, obj) => {
+    const localStorageKey = getStorage(key);
+    localStorageKey.push(obj);
+    localStorage.setItem(key, JSON.stringify(localStorageKey));
+  };
+
+  const removeStorage = (phone, key) => {
+    const localStorageKey = getStorage(key);
+    const filteredArray = localStorageKey.filter(
+      (item) => item.phone !== phone,
+    );
+
+    localStorage.setItem(key, JSON.stringify(filteredArray));
+  };
+
+  /* END Storage functions */
+
+  const addContactData = (contact) => {
+    setStorage('phonebook-contacts', contact);
+  };
+
   const renderContacts = (elem, data) => {
     const allRow = data.map(createRow);
     elem.append(...allRow);
@@ -294,6 +298,10 @@ const data = [
     list.addEventListener('click', (e) => {
       const target = e.target;
       if (target.closest('.del-icon')) {
+        const phoneNumberContacts = target
+          .closest('.contact')
+          .querySelectorAll('td')[3].firstChild.textContent;
+        removeStorage(phoneNumberContacts, 'phonebook-contacts');
         target.closest('.contact').remove();
       }
     });
@@ -312,6 +320,25 @@ const data = [
           return -1;
         }
       });
+
+    /* Sorted Items in localStorage */
+    const currentLocalStorage = getStorage('phonebook-contacts');
+    const sortedlocalStorage = [];
+    for (const itemTable of sortedRows) {
+      const itemTablePhoneNumber = itemTable.children[3].firstChild.textContent;
+
+      sortedlocalStorage.push(
+        currentLocalStorage.find((item) => item.phone === itemTablePhoneNumber),
+      );
+    }
+
+    localStorage.setItem(
+      'phonebook-contacts',
+      JSON.stringify(sortedlocalStorage),
+    );
+
+    /* END Sorted Items in localStorage */
+
     table.tBodies[0].append(...sortedRows);
   };
 
@@ -323,8 +350,9 @@ const data = [
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-
       const newContact = Object.fromEntries(formData);
+
+      newContact.phone = '+' + newContact.phone;
       console.log(newContact);
       addContactPage(newContact, list);
       addContactData(newContact);
@@ -342,7 +370,7 @@ const data = [
     );
     // Функционал
 
-    const allRow = renderContacts(list, data);
+    const allRow = renderContacts(list, getStorage('phonebook-contacts'));
     const {closeModal} = modalControl(btnAdd, formOverlay);
 
     hoverRow(allRow, logo);
