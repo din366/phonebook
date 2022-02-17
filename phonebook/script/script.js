@@ -215,14 +215,16 @@
 
   /* Storage functions */
 
-  const getStorage = (key) => {
+  /* const getStorage = (key) => {
     const localStorageKey = localStorage.getItem(key);
     if (localStorageKey === null) {
       return [];
     } else {
       return JSON.parse(localStorageKey);
     }
-  };
+  }; */
+
+  const getStorage = (key) => JSON.parse(localStorage.getItem(key)) || [];
 
   const setStorage = (key, obj) => {
     const localStorageKey = getStorage(key);
