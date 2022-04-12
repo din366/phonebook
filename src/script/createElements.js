@@ -1,3 +1,17 @@
+/* import image from '../img/icon.svg'; */
+import editImage from '../img/edit-icon.png';
+
+const createImageLogo = (path, classImg) => {
+  const img = document.createElement('img');
+  img.src = path;
+  if (classImg) {
+    console.log(classImg);
+    img.classList.add(classImg);
+    console.log(img);
+  }
+  return img;
+};
+
 const createContainer = () => {
   const container = document.createElement('div');
   container.classList.add('container');
@@ -166,8 +180,8 @@ const createRow = ({name: firstName, surname, phone}) => {
   tdEditButton.classList.add('th-center');
   const editButton = document.createElement('button');
   editButton.classList.add('edit-button');
-  editButton.innerHTML =
-    '<img class="edit-button-img" src="phonebook/img/edit-icon.png"></img>';
+  editButton.append(createImageLogo(editImage, 'edit-button-img'));
+  /* '<img class="edit-button-img" src="img/edit-icon.png"></img>'; */
   tdEditButton.append(editButton);
   /* END Add edit-button */
 
@@ -185,4 +199,5 @@ export default {
   createForm,
   createFooter,
   createRow,
+  createImageLogo,
 };
