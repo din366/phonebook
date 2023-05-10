@@ -1,5 +1,4 @@
-/* import image from '../img/icon.svg'; */
-import editImage from '../img/edit-icon.png';
+/* import editImage from '../img/edit-icon.png'; */
 
 const createImageLogo = (path, classImg) => {
   const img = document.createElement('img');
@@ -51,7 +50,7 @@ const createButtonsGroup = (params) => {
   const btnWrapper = document.createElement('div');
   btnWrapper.classList.add('btn-wrapper');
 
-  const btns = params.map(({className, type, text}) => {
+  const btns = params.map(({ className, type, text }) => {
     const button = document.createElement('button');
     button.type = type;
     button.textContent = text;
@@ -80,7 +79,6 @@ const createTable = () => {
       <th>Имя</th>
       <th>Фамилия</th>
       <th>Телефон</th>
-      <th class="th-center">Редактировать</th>
     </tr>
   `,
   );
@@ -152,7 +150,7 @@ const createFooter = (title) => {
   return footer;
 };
 
-const createRow = ({name: firstName, surname, phone}) => {
+const createRow = ({ name: firstName, surname, phone }) => {
   const tr = document.createElement('tr');
   tr.classList.add('contact');
 
@@ -176,16 +174,15 @@ const createRow = ({name: firstName, surname, phone}) => {
   tdPhone.append(phoneLink);
 
   /* Add edit-button */
-  const tdEditButton = document.createElement('td');
+  /* const tdEditButton = document.createElement('td');
   tdEditButton.classList.add('th-center');
   const editButton = document.createElement('button');
   editButton.classList.add('edit-button');
   editButton.append(createImageLogo(editImage, 'edit-button-img'));
-  /* '<img class="edit-button-img" src="img/edit-icon.png"></img>'; */
-  tdEditButton.append(editButton);
+  tdEditButton.append(editButton); */
   /* END Add edit-button */
 
-  tr.append(tdDel, tdName, tdSurname, tdPhone, tdEditButton);
+  tr.append(tdDel, tdName, tdSurname, tdPhone/* , tdEditButton */);
 
   return tr;
 };
